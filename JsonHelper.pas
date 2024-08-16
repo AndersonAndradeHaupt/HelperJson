@@ -29,7 +29,7 @@ constructor TJSONHelper.Create(const AJSON: string);
 begin
   inherited Create;
   FJSONValue := TJSONObject.ParseJSONValue(AJSON);
-  if not (FJSONValue is TJSONObject) then
+  if not (FJSONValue is TJSONObject) and  not (FJSONValue is TJSONArray) then
     raise Exception.Create('Json invalido');
   FJsonCriado := True;
 end;
@@ -60,7 +60,7 @@ var
 begin
   Value := (FJSONValue as TJSONObject).GetValue(AName);
   if not (Value is TJSONArray) then
-    raise Exception.CreateFmt('Array "%s" não encontrado ou invalido', [AName]);
+    raise Exception.CreateFmt('Array "%s" nÃ£o encontrado ou invalido', [AName]);
 
   JSONArray := Value as TJSONArray;
   Result := TJSONHelper.Create(JSONArray, False) as IJSONHelper
@@ -71,7 +71,7 @@ begin
     if FJSONValue is TJSONArray then
     Result := TJSONArray(FJSONValue).Count
   else
-    raise Exception.Create('Não é JSON array');
+    raise Exception.Create('NÃ£o Ã© JSON array');
 end;
 
 function TJSONHelper.GetObject(const AName: string): IJSONHelper;
@@ -81,7 +81,7 @@ var
 begin
   Value := (FJSONValue as TJSONObject).GetValue(AName);
   if not (Value is TJSONObject) then
-    raise Exception.CreateFmt('Object "%s" não encontrado ou invalido', [AName]);
+    raise Exception.CreateFmt('Object "%s" nÃ£o encontrado ou invalido', [AName]);
 
   JSONObject := Value as TJSONObject;
   Result := TJSONHelper.Create(JSONObject, False) as IJSONHelper;
@@ -91,7 +91,7 @@ function TJSONHelper.GetValue(const AName: string): TJSONValue;
 begin
   Result := (FJSONValue as TJSONObject).GetValue(AName);
   if Result = nil then
-    raise Exception.CreateFmt('Field "%s" não encontrato', [AName]);
+    raise Exception.CreateFmt('Field "%s" nÃ£o encontrato', [AName]);
 end;
 
 function TJSONHelper.GetValueAsString(const AName: string): string;
@@ -104,13 +104,13 @@ var
   JSONArray: TJSONArray;
 begin
   if not (FJSONValue is TJSONArray) then
-    raise Exception.Create('Não é um JSON array');
+    raise Exception.Create('NÃ£o Ã© um JSON array');
 
   JSONArray := FJSONValue as TJSONArray;
   if (Index >= 0) and (Index < JSONArray.Count) then
     Result := TJSONHelper.Create(JSONArray.Items[Index], False) as IJSONHelper
   else
-    raise Exception.CreateFmt('Index %d não encontrado', [Index]);
+    raise Exception.CreateFmt('Index %d nÃ£o encontrado', [Index]);
 end;
 
 end.
